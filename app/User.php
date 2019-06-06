@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\ResetPassword;
 
 class User extends Authenticatable
 {
@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+      'nombres', 'apellidos', 'email', 'password'
     ];
 
     /**
@@ -25,15 +25,26 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+      'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function sendPasswordResetNotification($token)
+    {
+      $this->notify(new ResetPassword($token));
+    }
+
+    public function checkRole($role)
+    {
+      return $this->role == $role;
+    }
+
+    public function isAdmin()
+    {
+      return $this->role == 'admin';
+    }
+
+    public function role()
+    {
+      return $this->role == 'admin' ? 'Administrador' : 'Usuario';
+    }
 }
