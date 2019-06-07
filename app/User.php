@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
       return $this->role == 'admin' ? 'Administrador' : 'Usuario';
     }
+
+    public function dispositivos()
+    {
+      return $this->hasMany('App\Dispositivo');
+    }
 }

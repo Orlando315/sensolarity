@@ -28,7 +28,17 @@ Route::group(['middleware' => 'auth'], function () {
 
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
+    /* --- Users --- */
     Route::resource('users', 'UsersControllers');
     Route::patch('users/{user}/password', 'UsersControllers@password')->name('users.password');
+
+    /* --- Configuration --- */
+    Route::get('configuration', 'ConfigurationsControllers@index')->name('configurations');
+    Route::patch('configuration/update', 'ConfigurationsControllers@update')->name('configurations.update');
+
+    /* --- Dispositivos --- */
+    Route::resource('dispositivos', 'DispositivosController');
+    Route::patch('dispositivos/{dispositivo}/disponibilidad', 'DispositivosController@disponibilidad')->name('dispositivos.disponibilidad');
+
   });
 });

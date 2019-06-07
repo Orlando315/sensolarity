@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Configuration;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+      $configuration = Configuration::first();
+
+      View::share('store_url', $configuration && $configuration->store_url != '#' ? $configuration->store_url : null);
     }
 }

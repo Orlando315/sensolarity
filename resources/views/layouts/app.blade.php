@@ -39,6 +39,21 @@
                 <p>Usuarios</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.dispositivos.index') }}">
+                <i class="fa fa-microchip"></i>
+                <p>Dispositivos</p>
+              </a>
+            </li>
+            @endif
+
+            @if(Auth::user()->isAdmin())
+            <li class="nav-item nav-item-fixed-bottom">
+              <a class="nav-link" href="{{ route('admin.configurations') }}">
+                <i class="fa fa-cogs"></i>
+                <p>Configuración</p>
+              </a>
+            </li>
             @endif
           </ul>
         </div>
@@ -59,6 +74,13 @@
               <ul class="nav navbar-nav mr-auto">
               </ul>
               <ul class="navbar-nav ml-auto">
+                @if($store_url)
+                  <li class="nav-item">
+                    <a href="{{ $store_url }}" class="nav-link" title="Tienda" target="_blank">
+                      <i class="fa fa-shopping-bag"></i>
+                    </a>
+                  </li>
+                @endif
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ Auth::user()->email }}
