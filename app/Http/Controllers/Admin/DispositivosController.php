@@ -47,7 +47,7 @@ class DispositivosController extends Controller
 
       $dispositivo = new Dispositivo($request->all());
 
-      if(Auth::user()->dispositivos()->save($dispositivo)){
+      if(Auth::user()->dispositivosAgregados()->save($dispositivo)){
 
         return redirect()->route('admin.dispositivos.show', ['dispositivo' => $dispositivo->id])->with([
           'flash_message' => 'Dispositivo agregado exitosamente.',

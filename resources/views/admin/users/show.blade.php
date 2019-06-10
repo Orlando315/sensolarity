@@ -55,6 +55,50 @@
         </div><!-- .card-footer -->
       </div><!-- .card -->
     </div>
+
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">
+            <i class="fa fa-microchip"></i> Dispositivos
+          </h4>
+        </div>
+        <div class="card-body">
+          <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">#</th>
+                <th scope="col" class="text-center">Dispositivo</th>
+                <th scope="col" class="text-center">Serial</th>
+                <th scope="col" class="text-center">Estado</th>
+                <th scope="col" class="text-center">Agregado</th>
+                <th scope="col" class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              @foreach($user->dispositivos as $d)
+                <tr>
+                  <td scope="row">{{ $loop->index + 1 }}</td>
+                  <td>
+                    <a href="{{ route('admin.dispositivos.show', ['dispositivo' => $d->dispositivo_id]) }}">
+                      {{ $d->name() }}
+                    </a>
+                  </td>
+                  <td>{{ $d->serial }}</td>
+                  <td>{!! $d->status() !!}</td>
+                  <td>{{ $d->created_at }}</td>
+                  <td>
+                    <a class="btn btn-primary btn-link btn-sm" href="{{ route('dispositivos.show', ['id' => $d->id] )}}" rel="tooltip" title="Ver dispositivo" data-original-title="Ver dispositivo">
+                      <i class="fa fa-search"></i>
+                    </a>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="passModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="passModalLabel">

@@ -26,6 +26,14 @@ Route::group(['middleware' => 'auth'], function () {
   Route::patch('perfil', 'HomeController@updatePerfil')->name('perfil.update');
   Route::patch('perfil/password', 'HomeController@password')->name('perfil.password');
 
+  /* --- Dispositivos --- */
+  Route::resource('dispositivos', 'DispositivosUsersController');
+  Route::patch('dispositivos/{dispositivo}/status', 'DispositivosUsersController@status')->name('dispositivos.status');
+  Route::post('dispositivos/check', 'DispositivosUsersController@check')->name('dispositivos.check');
+
+  Route::get('dispositivos/modulo/all', 'DispositivosUsersController@modulo')->name('dispositivos.modulo');
+  Route::get('dispositivos/mapa/all', 'DispositivosUsersController@mapa')->name('dispositivos.mapa');
+
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
     /* --- Users --- */

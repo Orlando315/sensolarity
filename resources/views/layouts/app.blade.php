@@ -47,6 +47,20 @@
             </li>
             @endif
 
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('dispositivos.modulo') }}">
+                <i class="fa fa-cubes"></i>
+                <p>Modulo</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('dispositivos.mapa') }}">
+                <i class="fa fa-map-marker"></i>
+                <p>Valor en mapa</p>
+              </a>
+            </li>
+
             @if(Auth::user()->isAdmin())
             <li class="nav-item nav-item-fixed-bottom">
               <a class="nav-link" href="{{ route('admin.configurations') }}">
@@ -74,13 +88,20 @@
               <ul class="nav navbar-nav mr-auto">
               </ul>
               <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a href="{{ route('dispositivos.create') }}" class="nav-link" rel="tooltip" title="Agregar dispositivo">
+                    <i class="fa fa-plus" aria-hidden="true"></i> Dispositivo
+                  </a>
+                </li>
+
                 @if($store_url)
                   <li class="nav-item">
-                    <a href="{{ $store_url }}" class="nav-link" title="Tienda" target="_blank">
+                    <a href="{{ $store_url }}" class="nav-link" rel="tooltip" title="Tienda" target="_blank">
                       <i class="fa fa-shopping-bag"></i>
                     </a>
                   </li>
                 @endif
+
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ Auth::user()->email }}

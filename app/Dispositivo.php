@@ -15,9 +15,24 @@ class Dispositivo extends Model
       'tipo', 'codigo', 'serial', 'deshabilitado'
     ];
 
-    public function user()
+    /**
+     * Relacion al usuario que lo agrego al sistema
+     *
+     * @var array
+     */
+    public function admin()
     {
       return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Relacion al usuario que lo agrego al sistema
+     *
+     * @var array
+     */
+    public function user()
+    {
+      return $this->belongsToMany('App\User', 'dispositivos_users')->using('App\DispositivoUser')->withPivot(['id', 'serial','disabled_at']);
     }
 
     public function tipo()

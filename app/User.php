@@ -48,8 +48,21 @@ class User extends Authenticatable
       return $this->role == 'admin' ? 'Administrador' : 'Usuario';
     }
 
-    public function dispositivos()
+    /**
+     * Relacion entre los dispositivos y el usuario (admin) que los agrego al sistema
+     *
+     */
+    public function dispositivosAgregados()
     {
       return $this->hasMany('App\Dispositivo');
+    }
+
+    /**
+     * Relacion entre los dispositivos y el usuario (no Admin) que lo compraron
+     *
+     */
+    public function dispositivos()
+    {
+      return $this->hasMany('App\DispositivoUser');
     }
 }

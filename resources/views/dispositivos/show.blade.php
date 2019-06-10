@@ -3,19 +3,21 @@
 @section('title','Dispositivos - '.config('app.name'))
 
 @section('brand')
-  <a class="navbar-brand" href="{{ route('admin.dispositivos.index') }}"> Dispositivos </a>
+  <a class="navbar-brand" href="{{ route('dashboard') }}"> Dispositivos </a>
 @endsection
 
 @section('content')
   <div class="row">
     <div class="col-12">
-      <a class="btn btn-default" href="{{ route('admin.dispositivos.index') }}"><i class="fa fa-reply" aria-hidden="true"></i> Volver</a>
-      <a class="btn btn-success" href="{{ route('admin.dispositivos.edit', ['dispositivo' => $dispositivo->id]) }}"><i class="fa fa-pencil" aria-hidden="true"></i> Editar</a>
+      <a class="btn btn-default" href="{{ route('dashboard') }}"><i class="fa fa-reply" aria-hidden="true"></i> Volver</a>
+      <a class="btn btn-success" href="{{ route('dispositivos.edit', ['dispositivo' => $dispositivo->id]) }}"><i class="fa fa-pencil" aria-hidden="true"></i> Editar</a>
       
-      @if($dispositivo->disponible)
-      <button class="btn btn-fill btn-warning" data-toggle="modal" data-target="#blockModal"><i class="fa fa-ban" aria-hidden="true"></i>Marcar No disponible</button>
-      @else
-      <button class="btn btn-fill btn-success" data-toggle="modal" data-target="#blockModal"><i class="fa fa-check" aria-hidden="true"></i>Marcar Disponible</button>
+      @if(Auth::user()->isAdmin())
+        @if($dispositivo->disabled_at)
+        <button class="btn btn-fill btn-success" data-toggle="modal" data-target="#blockModal"><i class="fa fa-check" aria-hidden="true"></i>Activar</button>
+        @else
+        <button class="btn btn-fill btn-warning" data-toggle="modal" data-target="#blockModal"><i class="fa fa-ban" aria-hidden="true"></i>Desactivar</button>
+        @endif
       @endif
 
       <button class="btn btn-fill btn-danger" data-toggle="modal" data-target="#delModal"><i class="fa fa-times" aria-hidden="true"></i> Eliminar</button>
@@ -31,15 +33,25 @@
           <h4>Información</h4>
         </div><!-- .card-header -->
         <div class="card-body">
-          <strong>Tipo</strong>
+          @if(Auth::user()->isAdmin())
+          <strong>Usuario</strong>
           <p class="text-muted">
-            {{ $dispositivo->tipo() }}
+            <a href="{{ route('admin.users.show', ['user' => $dispositivo->user_id]) }}" rel="tooltip" title="{{$dispositivo->user->nombres}} {{$dispositivo->user->apellidos}}">
+              {{ $dispositivo->user->email }}
+            </a>
           </p>
           <hr>
+          @endif
 
-          <strong>Código</strong>
+          <strong>Dispositivo</strong>
           <p class="text-muted">
-            {{ $dispositivo->codigo }}
+            @if(Auth::user()->isAdmin())
+              <a href="{{ route('admin.dispositivos.show', ['dispositivo' => $dispositivo->dispositivo_id]) }}">
+                {{ $dispositivo->name() }}
+              </a>
+            @else
+              {{ $dispositivo->name() }}
+            @endif
           </p>
           <hr>
 
@@ -49,9 +61,9 @@
           </p>
           <hr>
 
-          <strong>Disponible</strong>
+          <strong>Estado</strong>
           <p class="text-muted">
-            {!! $dispositivo->disponible() !!}
+            {!! $dispositivo->status() !!}
           </p>
         </div>
         <div class="card-footer text-center">
@@ -65,7 +77,7 @@
     <div class="col-md-9">
       <div class="card">
         <div class="card-header">
-          <h4 style="margin: 0">Dispositivos de usuarios</h4>
+          <h4 style="margin: 0">Datos</h4>
         </div>
         <div class="card-body">
           <table class="table data-table table-striped table-no-bordered table-hover table-sm" style="width: 100%">
@@ -74,51 +86,36 @@
                 <th scope="col" class="text-center">#</th>
                 <th scope="col" class="text-center">Email</th>
                 <th scope="col" class="text-center">Serial</th>
-                <th scope="col" class="text-center">Estado</th>
                 <th scope="col" class="text-center">Acción</th>
               </tr>
             </thead>
             <tbody class="text-center">
-              @foreach($dispositivo->user as $d)
-                <tr>
-                  <td scope="row">{{ $loop->index + 1 }}</td>
-                  <td title="{{ $d->nombres }} {{ $d->apellidos }}"><a href="{{ route('admin.users.show', ['user' => $d->id]) }}">{{ $d->email }}</a></td>
-                  <td>{{ $d->pivot->serial }}</td>
-                  <td>{!! $d->pivot->status() !!}</td>
-                  <td>
-                    <a class="btn btn-primary btn-link btn-sm" href="{{ route('dispositivos.show', ['dispositivo' => $d->pivot->id] )}}" rel="tooltip" title="Ver dispositivo" data-original-title="Ver dispositivo">
-                      <i class="fa fa-search"></i>
-                    </a>
-                  </td>
-                </tr>
-              @endforeach
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
-
+  
+  @if(Auth::user()->isAdmin())
   <div id="blockModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="passModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Cambiar disponibilidad</h4>
+          <h4 class="modal-title">Cambiar estado</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="row justify-content-md-center">
-            <form class="col-md-8" action="{{ route('admin.dispositivos.disponibilidad', ['dispositivo' => $dispositivo->id]) }}" method="POST">
+            <form class="col-md-8" action="{{ route('dispositivos.status', ['dispositivo' => $dispositivo->id]) }}" method="POST">
               @csrf
               @method('PATCH')
-
               <p class="text-center">
-                Los Usuarios no podrán a gregar este dispositivo si no esta disponible.
-                <br><br>
-                ¿Esta seguro de cambiar la Disponibilidad de este Dispositivo?
+                Los dispositivos desactivados no guardaran información.
               </p>
+              <p class="text-center">¿Esta seguro de cambiar el Estado de este Dispositivo?</p>
 
               <center>
                 <button class="btn btn-fill btn-danger" type="submit">Guardar</button>
@@ -130,6 +127,7 @@
       </div>
     </div>
   </div>
+  @endif
 
   <div id="delModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
     <div class="modal-dialog" role="document">
@@ -142,7 +140,7 @@
         </div>
         <div class="modal-body">
           <div class="row justify-content-md-center">
-            <form class="col-md-10" action="{{ route('admin.dispositivos.destroy', ['dispositivo' => $dispositivo->id]) }}" method="POST">
+            <form class="col-md-10" action="{{ route('dispositivos.destroy', ['dispositivo' => $dispositivo->id]) }}" method="POST">
               @csrf
               @method('DELETE')
 

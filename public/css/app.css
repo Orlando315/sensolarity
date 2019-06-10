@@ -46,7 +46,7 @@ button:hover{
 .card .table tbody td:last-child,
 .card .table thead th:last-child {
   padding-right: 15px;
-  display: block;
+  display: table-cell;
 }
 
 .btn-danger.btn-link,

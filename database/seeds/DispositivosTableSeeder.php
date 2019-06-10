@@ -14,7 +14,7 @@ class DispositivosTableSeeder extends Seeder
     {
       $admin = User::where('role', 'admin')->first();
 
-      $admin->dispositivos()->createMany([
+      $admin->dispositivosAgregados()->createMany([
         [
           'tipo' => 'P',
           'codigo' => '123',
