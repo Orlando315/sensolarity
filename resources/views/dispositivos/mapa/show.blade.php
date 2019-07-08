@@ -42,17 +42,17 @@
               <div class="row m-0">
 
                 <div class="col-md-4 p-1">
-                  <div id="data-alias-1" class="border rounded p-3 text-center">
+                  <div id="data-alias-1" class="border rounded p-2 text-center text-truncate" rel="tooltip" title="{{ $dispositivo->aliasData(1) }}">
                     {{ $dispositivo->aliasData(1) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-1" class="border rounded p-3 text-right">
+                  <div id="data-last-1" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}">
                     {{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-3 text-center">
+                  <div class="border rounded p-2 text-center">
                     <a href="{{ route('dispositivos.data.history', ['dispositivo' => $dispositivo->id, 'data' => 1]) }}" title="Ver historial">
                       Historial
                     </a>
@@ -74,17 +74,17 @@
               <div class="row m-0">
 
                 <div class="col-md-4 p-1">
-                  <div id="data-alias-2" class="border rounded p-3 text-center">
+                  <div id="data-alias-2" class="border rounded p-2 text-center text-truncate" rel="tooltip" title="{{ $dispositivo->aliasData(2) }}">
                     {{ $dispositivo->aliasData(2) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-2" class="border rounded p-3 text-right">
+                  <div id="data-last-2" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}">
                     {{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-3 text-center">
+                  <div class="border rounded p-2 text-center">
                     <a href="{{ route('dispositivos.data.history', ['dispositivo' => $dispositivo->id, 'data' => 2]) }}" title="Ver historial">
                       Historial
                     </a>
@@ -106,17 +106,17 @@
               <div class="row m-0">
 
                 <div class="col-md-4 p-1">
-                  <div id="data-alias-3" class="border rounded p-3 text-center">
+                  <div id="data-alias-3" class="border rounded p-2 text-center text-truncate" rel="tooltip" title="{{ $dispositivo->aliasData(3) }}">
                     {{ $dispositivo->aliasData(3) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-3" class="border rounded p-3 text-right">
+                  <div id="data-last-3" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}">
                     {{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-3 text-center">
+                  <div class="border rounded p-2 text-center">
                     <a href="{{ route('dispositivos.data.history', ['dispositivo' => $dispositivo->id, 'data' => 3]) }}" title="Ver historial">
                       Historial
                     </a>

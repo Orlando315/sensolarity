@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* --- Dispositivos Data --- */
     Route::get('{dispositivo}/data/{data}/history', 'DespositivosUsersDataController@history')->name('data.history');
+    Route::post('{dispositivo}/data/{data}/get', 'DespositivosUsersDataController@get')->name('data.get');
 
     /* --- Dispositivos Configuracion --- */
     Route::get('{dispositivo}/m/{data}/config', 'DispositivosUsersConfigController@config')->name('data.config');

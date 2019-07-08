@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 use App\Scopes\UserScope;
 
 class DispositivoUser extends Pivot
@@ -191,5 +192,27 @@ class DispositivoUser extends Pivot
           ]);
         }
       }
+    }
+
+    /**
+     * Buscar la informacion de un $data especifico del dispositivo, entre las fechas dadas ($start, $end)
+     *
+     * @param int  $data
+     * @param string  $start
+     * @param string  $end
+     * @return array
+     */
+    public function getDataByDateAsArray($data, $start, $end)
+    {
+      $info = $this->data()
+                    ->select("data_{$data}", 'created_at')
+                    ->whereBetween('created_at', [$start, $end])
+                    ->get()
+                    ->toArray();
+
+      $data = Arr::pluck($info, "data_{$data}");
+      $created = Arr::pluck($info, 'created_at');
+
+      return ['data' => $data, 'created' => $created];
     }
 }

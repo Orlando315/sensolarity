@@ -93,8 +93,28 @@ class DespositivosUsersDataController extends Controller
         //
     }
 
-    public function history()
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\DispositivoUserData  $dispositivoUserData
+     * @return \Illuminate\Http\Response
+     */
+    public function history(DispositivoUser $dispositivo, $data)
     {
-      
+      return view('dispositivos.history', compact('dispositivo', 'data'));
+    }
+
+
+    /**
+     * Obtener la informacion de un $data especifico del dispositivo, entre las fechas dadas (start, end)
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\DispositivoUserData  $dispositivoUserData
+     * @param  int  $data
+     * @return \Illuminate\Http\Response
+     */
+    public function get(Request $request, DispositivoUser $dispositivo, $data)
+    {
+      return response()->json($dispositivo->getDataByDateAsArray($data, $request->start, $request->end));
     }
 }
