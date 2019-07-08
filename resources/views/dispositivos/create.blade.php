@@ -19,13 +19,13 @@
 
               <div class="form-group">
                 <label class="control-label" for="tipo">Tipo: *</label>
-                <select id="tipo" class="form-control{{ $errors->has('tipo') ? 'has-error' : '' }}" name="tipo" required>
+                <select id="tipo" class="form-control" name="tipo" required>
                   <option value="P" {{ old('tipo') == 'P' ? 'selected' : '' }}> Valor en mapa (P)</option>
                   <option value="M" {{ old('tipo') == 'M' ? 'selected' : '' }}> Modulo (M)</option>
                 </select>
               </div>
 
-              <div class="form-group{{ $errors->has('codigo') ? 'has-error' : '' }}">
+              <div class="form-group">
                 <label class="control-label" for="codigo">Código: *</label>
                 <input id="codigo" class="form-control{{ $errors->has('codigo') ? ' is-invalid' : '' }}" type="text" name="codigo" pattern=".{3}" maxlength="3" value="{{ old('codigo') }}" placeholder="Código" required>
                 <small class="text-muted">Debe contener 3 caracteres.</small>
@@ -36,6 +36,11 @@
               </div>
               
               <fieldset id="final-area" style="display: none">
+                <div class="form-group">
+                  <label class="control-label" for="alias">Alias del dispositivo:</label>
+                  <input id="alias" class="form-control{{ $errors->has('alias') ? ' is-invalid' : '' }}" type="text" name="alias" maxlength="30" value="{{ old('alias') }}" placeholder="Alias del dispositivo">
+                </div>
+
                 <div class="form-group">
                   <label class="control-label" for="serial">Serial: *</label>
                   <input id="serial" class="form-control{{ $errors->has('serial') ? ' is-invalid' : '' }}" type="text" name="serial" maxlength="50" value="{{ old('serial') }}" placeholder="Serial" required disabled>
@@ -84,7 +89,7 @@
         $.ajax({
           type: 'POST',
           cache: false,
-          url: '{{ route("dispositivos.check") }}',
+          url: '{{ route("dispositivos.checkIfExist") }}',
           data: {
             _token: '{{ csrf_token() }}',
             tipo: tipo.val(),
@@ -95,19 +100,19 @@
         .done(function (res){
           if(res){
             $('#final-area').show()
-            $('#serial, #send-form').prop('disabled', false)
+            $('#alias, #serial, #send-form').prop('disabled', false)
           }else{
             $('#final-area').hide()
-            $('#serial, #send-form').prop('disabled', true)
-            $('#serial').val('')
+            $('#alias, #serial, #send-form').prop('disabled', true)
+            $('#alias, #serial').val('')
             alert.removeClass('alert-success').addClass('alert-danger')
             alert.show().delay(5000).hide('slow')
           }
         })
         .fail(function (){
-            $('#final-area').hide()
-            $('#serial, #send-form').prop('disabled', true)
-            $('#serial').val('')
+          $('#final-area').hide()
+          $('#alias, #serial, #send-form').prop('disabled', true)
+          $('#alias, #serial').val('')
         })
       }
     }

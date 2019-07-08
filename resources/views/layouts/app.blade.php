@@ -16,6 +16,8 @@
     <link href="{{ asset('css/light-bootstrap-dashboard.css?v=2.0.0') }}" rel="stylesheet" />
     <!-- Datatabes -->
     <link href="{{ asset('js/plugins/datatables/datatables.min.css') }}" rel="stylesheet" />
+    <!-- Bootstrap Slider -->
+    <link href="{{ asset('js/plugins/bootstrap-slider/bootstrap-slider.min.css') }}" rel="stylesheet" />
     <!-- App -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
 
@@ -48,14 +50,14 @@
             @endif
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('dispositivos.modulo') }}">
+              <a class="nav-link" href="{{ route('dispositivos.modulos.index') }}">
                 <i class="fa fa-cubes"></i>
                 <p>Modulo</p>
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('dispositivos.mapa') }}">
+              <a class="nav-link" href="{{ route('dispositivos.mapa.index') }}">
                 <i class="fa fa-map-marker"></i>
                 <p>Valor en mapa</p>
               </a>
@@ -152,6 +154,8 @@
     <script src="{{ asset('js/light-bootstrap-dashboard.js?v=2.0.0') }}" type="text/javascript"></script>
     <!-- Data-table -->
     <script src="{{ asset('js/plugins/datatables/datatables.min.js') }}" type="text/javascript"></script>
+    <!-- Bootstrap Slider -->
+    <script src="{{ asset('js/plugins/bootstrap-slider/bootstrap-slider.min.js') }}" type="text/javascript"></script>
 
     <script type="text/javascript">
       $(document).ready(function(){

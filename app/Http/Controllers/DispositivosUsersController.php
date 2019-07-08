@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Dispositivo;
 use App\DispositivoUser;
+use App\DispositivoUserConfig;
 
 class DispositivosUsersController extends Controller
 {
@@ -22,27 +23,42 @@ class DispositivosUsersController extends Controller
     }
 
     /**
-     * Muestra todos los recursos de Tipo M.
+     * Muestra todos los dispositivos de Tipo M.
      *
      * @return \Illuminate\Http\Response
      */
-    public function modulo()
+    public function modulos()
     {
       $dispositivos = Auth::user()->dispositivos()->where('tipo', 'M')->get();
 
-      return view('dispositivos.modulo', compact('dispositivos'));
+      return view('dispositivos.modulos.index', compact('dispositivos'));
     }
 
     /**
-     * Muestra todos los recursos de Tipo P.
+     * Muestra todos los dispositivos de Tipo P.
      *
      * @return \Illuminate\Http\Response
      */
-    public function mapa()
+    public function mapaIndex()
     {
       $dispositivos = Auth::user()->dispositivos()->where('tipo', 'P')->get();
 
-      return view('dispositivos.mapa', compact('dispositivos'));
+      return view('dispositivos.mapa.index', compact('dispositivos'));
+    }
+
+    /**
+     * Muestra un dispositivo de Tipo P especifico.
+     *
+     * @param  \App\DispositivoUser  $dispositivo
+     * @return \Illuminate\Http\Response
+     */
+    public function mapaShow(DispositivoUser $dispositivo)
+    {
+      if($dispositivo->tipo != 'P'){
+        abort(404);
+      }
+
+      return view('dispositivos.mapa.show', compact('dispositivo'));
     }
 
     /**
@@ -71,6 +87,7 @@ class DispositivosUsersController extends Controller
                           ->firstOrFail();
 
       $this->validate($request, [
+        'alias' => 'nullable|string|max:30',
         'serial' => 'required|alpha_num|max:50',
       ]);
 
@@ -81,7 +98,11 @@ class DispositivosUsersController extends Controller
                         ]);
 
       if(Auth::user()->dispositivos()->save($dispositivoUser)){
-        return redirect()->route('dispositivos.show', ['dispositivo' => $dispositivoUser->id])->with([
+        $dispositivoUser->config()->save(new DispositivoUserConfig(['alias' => $request->alias]));
+
+        $route = $dispositivoUser->tipo == 'M' ? 'dispositivos.modulos.index' : 'dispositivos.mapa.index';
+
+        return redirect()->route($route)->with([
           'flash_message' => 'Dispositivo agregado exitosamente.',
           'flash_class' => 'alert-success'
           ]);
@@ -126,13 +147,17 @@ class DispositivosUsersController extends Controller
     public function update(Request $request, DispositivoUser $dispositivo)
     {
       $this->validate($request, [
+        'alias' => 'nullable|string|max:30',
         'serial' => 'required|alpha_num|max:50',
       ]);
 
       $dispositivo->serial = $request->serial;
+      $dispositivo->config->alias = $request->alias;
 
-      if($dispositivo->save()){
-        return redirect()->route('dispositivos.show', ['dispositivo' => $dispositivo->id])->with([
+      $route = $dispositivo->tipo == 'M' ? 'dispositivos.modulos.index' : 'dispositivos.mapa.index';
+
+      if($dispositivo->push()){
+        return redirect()->route($route)->with([
           'flash_message' => 'Dispositivo modificado exitosamente.',
           'flash_class' => 'alert-success'
           ]);
@@ -153,15 +178,25 @@ class DispositivosUsersController extends Controller
      */
     public function destroy(DispositivoUser $dispositivo)
     {
-      $redirect = Auth::user()->isAdmin() ? route('admin.users.show', ['user' => $dispositivo->user_id]) : route('dashboard');
-
       if($dispositivo->delete()){
-        return redirect($redirect)->with([
+        $route = Auth::user()->isAdmin()
+                    ? route('admin.users.show', ['user' => $dispositivo->user_id])
+                    : $dispositivo->tipo == 'M'
+                      ? route('dispositivos.modulos.index')
+                      : route('dispositivos.mapa.index');
+
+        return redirect($route)->with([
           'flash_message' => 'Dispositivo eliminado exitosamente.',
           'flash_class' => 'alert-success'
           ]);
       }else{
-        return redirect()->route('dispositivos.show', ['dispositivo' => $dispositivo->id])->with([
+        $route = Auth::user()->isAdmin()
+                    ? route('dispositivos.show', ['dispositivo' => $dispositivo->id])
+                    : $dispositivo->tipo == 'M'
+                      ? route('dispositivos.modulos.index')
+                      : route('dispositivos.mapa.index');
+
+        return redirect($route)->with([
           'flash_message' => 'Ha ocurrido un error.',
           'flash_class' => 'alert-danger',
           'flash_important' => true
@@ -177,7 +212,7 @@ class DispositivosUsersController extends Controller
      */
     public function status(DispositivoUser $dispositivo)
     {
-      if(!Auth::isAdmin()){
+      if(!Auth::user()->isAdmin()){
         return redirect('dashboard');
       }
 
@@ -198,13 +233,12 @@ class DispositivosUsersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Evaluar si un dispositivo existe y esta disponible.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DispositivoUser  $dispositivo
      * @return \Illuminate\Http\Response
      */
-    public function check(Request $request)
+    public function checkIfExist(Request $request)
     {
       $exists = Dispositivo::where([
                             ['tipo', $request->tipo],

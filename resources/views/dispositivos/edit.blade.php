@@ -19,6 +19,11 @@
               <h4>Editar Dispositivo</h4>
 
               <div class="form-group">
+                <label class="control-label" for="alias">Alias:</label>
+                <input id="alias" class="form-control{{ $errors->has('alias') ? ' is-invalid' : '' }}" type="text" name="alias" maxlength="50" value="{{ old('alias') ?? $dispositivo->config->alias }}" placeholder="Alias del dispositivo">
+              </div>
+
+              <div class="form-group">
                 <label class="control-label" for="serial">Serial: *</label>
                 <input id="serial" class="form-control{{ $errors->has('serial') ? ' is-invalid' : '' }}" type="text" name="serial" maxlength="50" value="{{ old('serial') ?? $dispositivo->serial }}" placeholder="Serial" required>
               </div>
@@ -34,7 +39,7 @@
               @endif
 
               <div class="form-group text-right">
-                <a class="btn btn-default" href="{{ route('dispositivos.show', ['dispositivo' => $dispositivo]) }}"><i class="fa fa-reply"></i> Atras</a>
+                <a class="btn btn-default" href="{{ route( $dispositivo->tipo == 'M' ? 'dispositivos.modulos.index' : 'dispositivos.mapa.index') }}"><i class="fa fa-reply"></i> Atras</a>
                 <button class="btn btn-primary" type="submit"><i class="fa fa-send"></i> Guardar</button>
               </div>
             </form>

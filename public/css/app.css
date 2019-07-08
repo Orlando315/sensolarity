@@ -34,6 +34,86 @@
   }
 }
 
+.card-dispositivo .card-body .col{
+  padding: 0;
+}
+.rango-group,
+.card-dispositivo .card-body .row{
+  position: relative;
+}
+.rango-group .btn-remove,
+.card-dispositivo .dispositivo-config-link,
+.card-dispositivo .btn-config-dropdown{
+  position: absolute;
+  top: -6px;
+  right: 3px;
+}
+.rango-group .btn-remove,
+.card-dispositivo .dispositivo-config-link,
+.card-dispositivo .btn-config-dropdown .dropdown-toggle{
+  padding: 6px;
+  height: 1px;
+  width: 1px;
+  border-radius: 50% !important;
+  opacity: 0;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
+}
+.rango-group .btn-remove,
+.card-dispositivo:hover .dispositivo-config-link,
+.card-dispositivo:hover .btn-config-dropdown .dropdown-toggle{
+  opacity: 1;
+  height: 32px;
+  width: 32px;
+}
+.card-dispositivo .dropdown-menu.dropdown-menu-right{
+  transform: translate3d(-128px, 32px, 0px) !important;
+}
+
+
+@media (max-width: 575px){
+  .rango-group .btn-remove,
+  .card-dispositivo .dispositivo-config-link,
+  .card-dispositivo .btn-config-dropdown .dropdown-toggle{
+    opacity: 1;
+    height: 32px;
+    width: 32px;
+  }
+}
+
+#configModal.modal.fade .modal-dialog {
+  transition: -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  transition: transform .3s ease-out,-webkit-transform .3s ease-out;
+  -webkit-transform: translate(20%, 30%);
+  transform: translate(20%, 30%);
+
+}
+#configModal.modal.show .modal-dialog {
+  -webkit-transform: translate(0, 30%);
+  -o-transform: translate(0, 30%);
+  transform: translate(0, 30%);
+}
+#configModal.fade {
+  transition: opacity .3s ease-in;
+}
+
+.rango-group input[type="range"]{
+  width: 100%;
+}
+
+.loading-screen{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1070;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+  background-color: rgba(255, 255, 255, .7);
+}
+
 /* Fix light-bootstrap-dashboard */
 button:hover{
   cursor: pointer;
@@ -77,4 +157,16 @@ h1, h2, h3, h4, h5{
 }
 .navbar .navbar-nav .nav-item .nav-link [class^="fa"]{
   line-height: 1;
+}
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-danger,
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-primary,
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-info,
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-warning,
+.bootstrap-switch.bootstrap-switch-off .bootstrap-switch-success {
+  background-color: #cfcfca;
+}
+
+.tooltip.in{
+  filter: alpha(opacity=90);
+  opacity: .9;
 }

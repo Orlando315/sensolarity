@@ -55,7 +55,13 @@
           </p>
           <hr>
 
-          <strong>serial</strong>
+          <strong>Alias</strong>
+          <p class="text-muted">
+            {{ $dispositivo->config->alias ?? 'N/A' }}
+          </p>
+          <hr>
+
+          <strong>Serial</strong>
           <p class="text-muted">
             {{ $dispositivo->serial }}
           </p>
@@ -75,6 +81,14 @@
     </div>
 
     <div class="col-md-9">
+      @if($dispositivo->tipo == "M")
+        @include('dispositivos.card-modulo')
+      @else
+        @include('dispositivos.card-point')
+      @endif
+    </div>
+
+    <div class="col-12 mt-3">
       <div class="card">
         <div class="card-header">
           <h4 style="margin: 0">Datos</h4>
@@ -84,12 +98,24 @@
             <thead>
               <tr>
                 <th scope="col" class="text-center">#</th>
-                <th scope="col" class="text-center">Email</th>
-                <th scope="col" class="text-center">Serial</th>
-                <th scope="col" class="text-center">Acción</th>
+                <th scope="col" class="text-center">Gateway</th>
+                <th scope="col" class="text-center">{{ $dispositivo->aliasData(1) }}</th>
+                <th scope="col" class="text-center">{{ $dispositivo->aliasData(2) }}</th>
+                <th scope="col" class="text-center">{{ $dispositivo->aliasData(3) }}</th>
+                <th scope="col" class="text-center">Agregado</th>
               </tr>
             </thead>
             <tbody class="text-center">
+              @foreach($dispositivo->data as $data)
+                <tr>
+                  <td scope="row">{{ $loop->index + 1 }}</td>
+                  <td>{{ $data->gateway }}</td>
+                  <td>{{ $data->data(1) }}</td>
+                  <td>{{ $data->data(2) }}</td>
+                  <td>{{ $data->data(3) }}</td>
+                  <td>{{ $data->created_at }}</td>
+                </tr>
+              @endforeach
             </tbody>
           </table>
         </div>

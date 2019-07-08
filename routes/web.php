@@ -16,6 +16,9 @@ Route::view('login', 'auth.login');
 
 Auth::routes();
 
+/* --- Dispositivos data --- */
+Route::get('dispositivos/data/store', 'DespositivosUsersDataController@store')->name('dispositivos.data.store');
+
 /* --- Solo usuarios autenticados --- */
 Route::group(['middleware' => 'auth'], function () {
   /* --- Dashboard --- */
@@ -28,11 +31,24 @@ Route::group(['middleware' => 'auth'], function () {
 
   /* --- Dispositivos --- */
   Route::resource('dispositivos', 'DispositivosUsersController');
-  Route::patch('dispositivos/{dispositivo}/status', 'DispositivosUsersController@status')->name('dispositivos.status');
-  Route::post('dispositivos/check', 'DispositivosUsersController@check')->name('dispositivos.check');
+  Route::prefix('/dispositivos')->name('dispositivos.')->group(function(){
+    Route::patch('{dispositivo}/status', 'DispositivosUsersController@status')->name('status');
+    Route::post('checkIfExist', 'DispositivosUsersController@checkIfExist')->name('checkIfExist');
 
-  Route::get('dispositivos/modulo/all', 'DispositivosUsersController@modulo')->name('dispositivos.modulo');
-  Route::get('dispositivos/mapa/all', 'DispositivosUsersController@mapa')->name('dispositivos.mapa');
+    Route::get('modulo/all', 'DispositivosUsersController@modulos')->name('modulos.index');
+    Route::get('mapa/all', 'DispositivosUsersController@mapaIndex')->name('mapa.index');
+
+    /* --- Dispositivos Data --- */
+    Route::get('{dispositivo}/data/{data}/history', 'DespositivosUsersDataController@history')->name('data.history');
+
+    /* --- Dispositivos Configuracion --- */
+    Route::get('{dispositivo}/m/{data}/config', 'DispositivosUsersConfigController@config')->name('data.config');
+    Route::patch('{dispositivo}/m/{data}/config', 'DispositivosUsersConfigController@updateM')->name('config.updateM');
+
+    Route::get('{dispositivo}/mapa', 'DispositivosUsersController@mapaShow')->name('mapa.show');
+    Route::patch('{dispositivo}/p/{data}/config', 'DispositivosUsersConfigController@updateP')->name('config.updateP');
+    Route::post('{dispositivo}/get/{data}/config', 'DispositivosUsersConfigController@get');
+  });
 
   /* --- Admin --- */
   Route::prefix('/admin')->name('admin.')->namespace('Admin')->middleware('role:admin')->group(function(){        
