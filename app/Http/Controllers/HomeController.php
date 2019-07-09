@@ -15,8 +15,10 @@ class HomeController extends Controller
     public function dashboard()
     {
       $dispositivos = Auth::user()->dispositivos;
+      $modulos = Auth::user()->dispositivos()->where('tipo', 'M')->get();
+      $mapas = Auth::user()->dispositivos()->where('tipo', 'P')->get();
 
-      return view('dashboard', compact('dispositivos'));
+      return view('dashboard', compact('dispositivos', 'modulos', 'mapas'));
     }
 
     /**
