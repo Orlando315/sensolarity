@@ -49,6 +49,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('{dispositivo}/mapa', 'DispositivosUsersController@mapaShow')->name('mapa.show');
     Route::patch('{dispositivo}/p/{data}/config', 'DispositivosUsersConfigController@updateP')->name('config.updateP');
     Route::post('{dispositivo}/get/{data}/config', 'DispositivosUsersConfigController@get');
+
+    // Guardar ubicacion del dispositivo
+    Route::patch('{dispositivo}/mapa/location', 'DispositivosUsersConfigController@location')->name('config.location');
   });
 
   /* --- Admin --- */

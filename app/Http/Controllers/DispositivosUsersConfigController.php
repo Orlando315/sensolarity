@@ -121,4 +121,13 @@ class DispositivosUsersConfigController extends Controller
 
       return response()->json($response);
     }
+
+    public function location(Request $request, Dispositivo $dispositivo)
+    {
+      $dispositivo->config->lat = $request->lat;
+      $dispositivo->config->lng = $request->lng;
+      $dispositivo->config->zoom = $request->zoom;
+
+      return response()->json($dispositivo->push());
+    }
 }

@@ -27,4 +27,9 @@ class DispositivoUserConfig extends Model
       'unidad_3',
     ];
 
+    public function hasPosition()
+    {
+      return $this->lat && $this->lng;
+    }
+
 }

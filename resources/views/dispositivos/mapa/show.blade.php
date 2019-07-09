@@ -36,7 +36,7 @@
     <div class="col-12">
       <div class="row">
 
-        <div class="col-4 p-1">
+        <div class="col-md-4 p-1">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <div class="col-4 p-1">
+        <div class="col-md-4 p-1">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div class="col-4 p-1">
+        <div class="col-md-4 p-1">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -135,7 +135,17 @@
     </div>
   </div>
 
-  <div class="row mt-4">
+  <div class="row mt-2 justify-content-center">
+    <div class="col-md-1 border rounded p-2{{ $dispositivo->config->hasPosition() ? ' border-default' : ' border-primary' }}">
+      <img id="google-pin" class="d-flex mx-auto{{ $dispositivo->config->hasPosition() ? ' invisible' : '' }}" src="{{ asset('img/google-pin.png') }}" alt="Google pin" draggable="true">
+    </div>
+    <div class="col-12 mt-2">
+      <div class="alert alert-dismissible alert-map m-0" role="alert" style="display: none">
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
     <div class="col-12 p-0">
       <div class="card card-dispositivo m-0">
         <div class="card-body p-1">
@@ -243,6 +253,10 @@
 @endsection
 
 @section('scripts')
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoqIKTFDnTKZ_xy5Q_X64P1LsbDhkPzds&callback=initMap"
+  async defer></script>
+  <script type="text/javascript" src="{{ asset('js/plugins/DragDropTouch.js') }}"></script>
+
   <script type="text/javascript">
     $(document).ready(function () {
       $('#configModal').on('show.bs.modal', loadConfig);
@@ -251,10 +265,29 @@
       $('.add-rango').click(addRango)
       $('#rangos-box').on('click', '.btn-remove', removeRango)
       $('#rangos-box').on('change', '.rango-color-picker', changeSliderColor)
+
+      $('#google-pin').on('drag', draggingPin)
+
+      $('html').on('dragover', function(e) {
+                  e.preventDefault();
+                  return false
+                })
+                .on('drop', function(e){
+                  e.preventDefault();
+                  return false
+                })
+
+      $('#map').on('drop', dropedPin)
+
+      // Si no hay ubicacion guardara, usar la HTML5 geolocation
+      if(!@json($dispositivo->config->lat) && !@json($dispositivo->config->lng)){
+        getLocation()
+      }else{
+        initMarker()
+      }
     })
 
     let rangosToDelete = []
-    const alertConfig = $('.alert-config');
     const loadingScreen = $('.loading-screen');
     let dispositivo = @json($dispositivo->id);
     let rangoGroup =  `<div class="form-row rango-group" position=":position:" rango=":id:">
@@ -298,6 +331,9 @@
       })
       .fail(function () {
         showAlert()
+      })
+      .always(function () {
+        loadingScreen.toggleClass('invisible', true)
       })
     }
 
@@ -450,20 +486,246 @@
       })
       .always(function () {
         btn.prop('disabled', false)
+        loadingScreen.toggleClass('invisible', true)
       })
     }
 
-    function showAlert(error = true){
+    function showAlert(element = '.alert-config', error = true){
       let message = error ? 'Ha ocurrido un error.' : 'Cambios guardados con exito.';
-
-      alertConfig
+      let alert = $(element)
+      alert
         .toggleClass('alert-danger', error)
         .toggleClass('alert-success', !error)
 
-      alertConfig.text(message)
-      alertConfig.show().delay(5000).hide('slow')
-
-      loadingScreen.toggleClass('invisible', true)
+      alert.text(message)
+      alert.show().delay(5000).hide('slow')
     }
+
+    var map, marker, infoWindow, saveMapBtn, overlayLayer;
+    var zoom = @json($dispositivo->config->zoom);
+    var myPosition = {
+          lat: @json($dispositivo->config->lat) || -34.397,
+          lng: @json($dispositivo->config->lng) || 150.644
+        };
+    const alertMap = $('.alert-map');
+
+    // Crear boton para gaurdar ubicacion del mapa
+    (function () {
+      saveMapBtn = document.createElement('button')
+      saveMapBtn.id = 'save-map-btn'
+      saveMapBtn.innerHTML = 'Guardar ubicación'
+      saveMapBtn.title = 'Guardar informacón de ubicación'
+      saveMapBtn.className = 'btn btn-sm btn-fill btn-primary mt-2'
+
+      saveMapBtn.addEventListener('click', saveMapLocation)
+    })()
+
+    // Inicializar Google Maps
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+          lat: myPosition.lat,
+          lng: myPosition.lng,
+        },
+        zoom: zoom || 12,
+        mapTypeControl: false,
+        streetViewControl: false,
+      })
+
+      // Insertar boton en el mapa
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(saveMapBtn)
+
+      overlayLayer = new google.maps.OverlayView()
+      overlayLayer.draw = function() {}
+      overlayLayer.setMap(map)
+    }
+
+    // Iniciar el marcador
+    function initMarker() {
+      marker = new google.maps.Marker({
+        map: map,
+        position: myPosition,
+        title: '{{ $dispositivo->alias() }}',
+        draggable: true,
+      })
+
+      // Al iniciar el arrastre del pin
+      google.maps.event.addListener(marker, 'dragstart', function() {
+        // Agragar animacion
+        marker.setAnimation(google.maps.Animation.BOUNCE)
+      })
+
+      // Durante e arrastre del pin
+      google.maps.event.addListener(marker, 'drag', function() {
+        map.setOptions({draggable: false});
+        let pixelPosition =  getPixelPosition()
+
+        // Sacar pin de mapa si la posicion del pin alcanza los bordes
+        if(pixelPosition.y <= 10 || pixelPosition.x <= 10){
+          dragOut()
+        }
+      })
+
+      // Al soltar el pin
+      google.maps.event.addListener(marker, 'dragend', function(e) {
+        // Eliminar animacion
+        marker.setAnimation(google.maps.Animation.DROP)
+        map.setOptions({draggable: true});
+
+        // Guardar ubicacion
+        myPosition.lat = e.latLng.lat()
+        myPosition.lng = e.latLng.lng()
+      })
+    }
+
+    // Obtener ubicacion del usuario
+    function getLocation() {
+      infoWindow = new google.maps.InfoWindow({
+        position: map.getCenter()
+      })
+
+      // HTML5 geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          myPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          } 
+
+          infoWindow.setPosition(myPosition)
+          infoWindow.setContent('Ubicación encontrada.')
+          infoWindow.open(map)
+          map.setCenter(myPosition)
+          initMarker()
+
+          // Ocular la ventana de informacion en el mapa
+          setTimeout(function(){
+            infoWindow.close()
+          }, 5000)
+
+          // Quitar Pin de Google
+          toggleGooglePinStatus(false)
+
+        }, function() {
+          handleLocationError(true, infoWindow, map.getCenter())
+        });
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter())
+      }
+    }
+
+    // Error al ubicar la posicion
+    function handleLocationError(browserHasGeolocation) {
+      infoWindow.setPosition(myPosition)
+      infoWindow.setContent(browserHasGeolocation ?
+                            'Error: El servicio de Geolocalizacion falló.' :
+                            'Error: Tu navegador no soporta geolocalización.');
+      infoWindow.open(map)
+
+      // Ocular la ventana de informacion en el mapa
+      setTimeout(function(){
+        infoWindow.close()
+      }, 5000)
+    }
+    // Al arrastrar el Pin, disminuir el opacity
+    function draggingPin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.originalEvent.target.style.opacity = '0.4'
+    }
+
+    // Al soltar el pin
+    function dropedPin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('google-pin').style.opacity = '1'
+
+      let x = e.pageX - $('#map').offset().left,
+          y = e.pageY - $('#map').offset().top;
+      
+      if(y > 0) {
+        let point = new google.maps.Point(x, y),
+            pointPosition = overlayLayer.getProjection().fromContainerPixelToLatLng(point)
+        
+        // Guardar ubicacion
+        myPosition.lat = pointPosition.lat()
+        myPosition.lng = pointPosition.lng()
+
+        initMarker()
+        toggleGooglePinStatus(false)
+      }
+    }
+
+    // Cuando el marcador esta fuera del mapa.
+    function dragOut() {
+      map.setOptions({draggable: true})
+      marker.setMap(null)
+      myPosition.lat = null
+      myPosition.lng = null
+
+      // Colocar el pin de Google como disponible para mover
+      toggleGooglePinStatus(true)
+    }
+
+    // Colocar el Pin de Google disponible/no disponible para arrastrar
+    function toggleGooglePinStatus(addClass = null)
+    {
+      addClass = addClass === null ? !$('#google-pin').parent().hasClass('border-primary') : addClass
+      $('#google-pin').parent()
+                      .toggleClass('border-primary', addClass)
+                      .toggleClass('border-default', !addClass)
+      $('#google-pin').toggleClass('invisible', !addClass)
+    }
+
+    // Obtener la ubicacion del pin con relacion a la ubicacion del mapa en pantalla
+    function getPixelPosition () {
+      let scale = Math.pow(2, map.getZoom()),
+          nw = new google.maps.LatLng(
+            map.getBounds().getNorthEast().lat(),
+            map.getBounds().getSouthWest().lng()
+          );
+      let worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw),
+          worldCoordinate = map.getProjection().fromLatLngToPoint(marker.getPosition()),
+          pixelOffset = new google.maps.Point(
+            Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+            Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+          );
+
+      return {
+        x: pixelOffset.x,
+        y: pixelOffset.y,
+        right:  document.getElementById('map').clientWidth - pixelOffset.x,
+        bottom: document.getElementById('map').clientHeight - pixelOffset.y
+      };
+    }
+
+    // Guardar ubicacion del Pin en DB al darle al boton en el Mapa
+    function saveMapLocation() {
+      $('#save-map-btn').attr('disabled', true)
+
+      $.ajax({
+        type: 'POST',
+        url: '{{ route("dispositivos.config.location", ["dispositivo" => $dispositivo->id]) }}',
+        data: {
+          _token: '{{ csrf_token() }}',
+          _method: 'PATCH',
+          lat: myPosition.lat,
+          lng: myPosition.lng,
+          zoom: map.getZoom(),
+        },
+        dataType: 'json',
+      })
+      .done(function(response) {
+        showAlert('.alert-map', !response)
+      })
+      .fail(function() {
+        showAlert('.alert-map')
+      })
+      .always(function() {
+        $('#save-map-btn').attr('disabled', false)
+      })
+    }
+
   </script>
 @endsection
