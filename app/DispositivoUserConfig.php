@@ -27,6 +27,21 @@ class DispositivoUserConfig extends Model
       'unidad_3',
     ];
 
+    protected $casts = [
+      'lat' => 'float',
+      'lng' => 'float',
+      'zoom' => 'integer',
+      'min_1' => 'float',
+      'max_1' => 'float',
+      'porcentual_1' => 'boolean',
+      'min_2' => 'float',
+      'max_2' => 'float',
+      'porcentual_2' => 'boolean',
+      'min_3' => 'float',
+      'max_3' => 'float',
+      'porcentual_3' => 'boolean',
+    ];
+
     public function hasPosition()
     {
       return $this->lat && $this->lng;

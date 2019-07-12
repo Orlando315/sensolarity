@@ -14,4 +14,9 @@ class DispositivoUserRango extends Model
       'max',
       'color',
     ];
+
+    protected $casts = [
+      'min' => 'integer',
+      'max' => 'integer',
+    ];
 }

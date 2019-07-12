@@ -15,6 +15,12 @@ class DispositivoUserData extends Model
       'data_3',
     ];
 
+    protected $casts = [
+      'data_1' => 'float',
+      'data_2' => 'float',
+      'data_3' => 'float',
+    ];
+
     /**
      * Divide la cadena de los datos y agrega los valores al modelo
      * @param $data  string 
