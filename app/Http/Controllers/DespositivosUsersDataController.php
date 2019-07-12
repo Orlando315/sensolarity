@@ -36,7 +36,11 @@ class DespositivosUsersDataController extends Controller
      */
     public function store(Request $request)
     {
-      $dispositivo = DispositivoUser::where('serial', $request->serial)->firstOrFail();
+      $dispositivo = DispositivoUser::where([
+                                        ['serial', $request->serial],
+                                        ['disabled_at', null]
+                                      ])
+                                      ->firstOrFail();
 
       $data = new DispositivoUserData;
 
