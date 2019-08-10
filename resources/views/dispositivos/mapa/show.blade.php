@@ -542,6 +542,11 @@
 
     // Iniciar el marcador
     function initMarker() {
+      if(!google || !map){
+        setTimeout(initMarker, 1000)
+        return false
+      }
+
       marker = new google.maps.Marker({
         map: map,
         position: myPosition,
@@ -580,6 +585,11 @@
 
     // Obtener ubicacion del usuario
     function getLocation() {
+      if(!google || !map){
+        setTimeout(getLocation, 1000)
+        return false
+      }
+
       infoWindow = new google.maps.InfoWindow({
         position: map.getCenter()
       })
