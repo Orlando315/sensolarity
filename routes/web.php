@@ -17,7 +17,7 @@ Route::view('login', 'auth.login');
 Auth::routes();
 
 /* --- Dispositivos data --- */
-Route::get('dispositivos/data/store', 'DespositivosUsersDataController@store')->name('dispositivos.data.store');
+Route::get('dispositivos/data/store', 'DispositivosUsersDataController@store')->name('dispositivos.data.store');
 
 /* --- Solo usuarios autenticados --- */
 Route::group(['middleware' => 'auth'], function () {
@@ -39,8 +39,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('mapa/all', 'DispositivosUsersController@mapaIndex')->name('mapa.index');
 
     /* --- Dispositivos Data --- */
-    Route::get('{dispositivo}/data/{data}/history', 'DespositivosUsersDataController@history')->name('data.history');
-    Route::post('{dispositivo}/data/{data}/get', 'DespositivosUsersDataController@get')->name('data.get');
+    Route::get('{dispositivo}/data/{data}/history', 'DispositivosUsersDataController@history')->name('data.history');
+    Route::post('{dispositivo}/data/{data}/get', 'DispositivosUsersDataController@get')->name('data.get');
 
     /* --- Dispositivos Configuracion --- */
     Route::get('{dispositivo}/m/{data}/config', 'DispositivosUsersConfigController@config')->name('data.config');

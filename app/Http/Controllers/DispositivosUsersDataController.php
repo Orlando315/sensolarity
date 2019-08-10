@@ -7,7 +7,7 @@ use App\DispositivoUserData;
 use App\DispositivoUser;
 use App\Events\DispositivoDataStored;
 
-class DespositivosUsersDataController extends Controller
+class DispositivosUsersDataController extends Controller
 {
     /**
      * Display a listing of the resource.
