@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\DispositivoUserData;
 use App\DispositivoUser;
+use App\Events\DispositivoDataStored;
 
 class DespositivosUsersDataController extends Controller
 {
@@ -47,7 +48,9 @@ class DespositivosUsersDataController extends Controller
       $data->gateway = $request->gateway;
       $data->fillData($request->dato);
 
-      $dispositivo->data()->save($data);
+      if($dispositivo->data()->save($data)){
+        broadcast(new DispositivoDataStored($data));
+      }
     }
 
     /**

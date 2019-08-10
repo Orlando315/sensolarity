@@ -53,4 +53,9 @@ class DispositivoUserData extends Model
     {
       return number_format($this->{"data_{$data}"}, 0, ',', '.');
     }
+
+    public function dispositivo()
+    {
+      return $this->belongsTo('App\DispositivoUser', 'dispositivo_user_id');
+    }
 }

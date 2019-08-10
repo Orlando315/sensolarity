@@ -12,7 +12,7 @@
 
   <div class="row mt-4">
     @forelse($dispositivos as $d)
-      <div class="col-md-6">
+      <div id="dispositivo-{{ $d->id }}" class="col-md-6">
         <div class="card card-dispositivo">
           <div class="card-header">
             <h4 class="card-title text-center">
@@ -44,7 +44,7 @@
                 </div>
               </div>
               <div class="col-md-4 pb-2 pb-md-0 pl-md-2">
-                <div class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $d->lastData(1) }} {{ $d->unidad(1) }}">
+                <div class="border rounded p-2 text-right text-truncate dispositivo-data-1" rel="tooltip" title="{{ $d->lastData(1) }} {{ $d->unidad(1) }}">
                   {{ $d->lastData(1) }} {{ $d->unidad(1) }}
                 </div>
               </div>
@@ -68,7 +68,7 @@
                 </div>
               </div>
               <div class="col-md-4 pb-2 pb-md-0 pl-md-2">
-                <div class="border rounded p-2 text-right" rel="tooltip" title="{{ $d->lastData(2) }} {{ $d->unidad(2) }}">
+                <div class="border rounded p-2 text-right text-truncate dispositivo-data-2" rel="tooltip" title="{{ $d->lastData(2) }} {{ $d->unidad(2) }}">
                   {{ $d->lastData(2) }} {{ $d->unidad(2) }}
                 </div>
               </div>
@@ -92,7 +92,7 @@
                 </div>
               </div>
               <div class="col-md-4 pb-2 pb-md-0 pl-md-2">
-                <div class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $d->lastData(3) }} {{ $d->unidad(3) }}">
+                <div class="border rounded p-2 text-right text-truncate dispositivo-data-3" rel="tooltip" title="{{ $d->lastData(3) }} {{ $d->unidad(3) }}">
                   {{ $d->lastData(3) }} {{ $d->unidad(3) }}
                 </div>
               </div>
@@ -156,6 +156,9 @@
 @endsection
 
 @section('scripts')
+
+  @include('partials.dispositivosPusher')
+
   <script type="text/javascript">
     $(document).ready(function () {
       $('#delModal').on('show.bs.modal', function (event) {

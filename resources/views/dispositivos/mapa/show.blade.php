@@ -33,7 +33,7 @@
   </div>
 
   <div class="row">
-    <div class="col-12">
+    <div id="dispositivo-{{ $dispositivo->id }}" class="col-12">
       <div class="row">
 
         <div class="col-md-4 p-1">
@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-1" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-1" rel="tooltip" title="{{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}">
                     {{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}
                   </div>
                 </div>
@@ -79,7 +79,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-2" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-2" rel="tooltip" title="{{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}">
                     {{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}
                   </div>
                 </div>
@@ -111,7 +111,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div id="data-last-3" class="border rounded p-2 text-right text-truncate" rel="tooltip" title="{{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-3" rel="tooltip" title="{{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}">
                     {{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}
                   </div>
                 </div>
@@ -256,6 +256,8 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoqIKTFDnTKZ_xy5Q_X64P1LsbDhkPzds&callback=initMap"
   async defer></script>
   <script type="text/javascript" src="{{ asset('js/plugins/DragDropTouch.js') }}"></script>
+
+  @include('partials.dispositivosPusher')
 
   <script type="text/javascript">
     $(document).ready(function () {
@@ -474,7 +476,7 @@
       .done(function (response) {
         if(response){
           $(`#data-alias-${data}`).text(response.alias)
-          $(`#data-last-${data}`).text(response.lastData)
+          $(`.dispositivo-data-${data}`).text(response.lastData)
 
           showAlert(false)
         }else{
