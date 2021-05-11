@@ -113,7 +113,8 @@ class DispositivosUsersConfigController extends Controller
 
         $response = [
           'alias' => $dispositivo->aliasData($data),
-          'lastData' => $dispositivo->lastData($data) . $dispositivo->unidad($data),
+          'lastData' => $dispositivo->lastData($data) .' '. $dispositivo->unidad($data),
+          'rangos' => $dispositivo->rangos()->where('data', $data)->get(),
         ];
       }else{
         $response = false;

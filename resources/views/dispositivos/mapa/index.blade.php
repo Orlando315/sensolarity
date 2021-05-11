@@ -127,7 +127,8 @@
 
 @section('scripts')
   
-  @include('partials.dispositivosPusher')
+  @component('partials.dispositivosPusher')
+  @endcomponent
   
   <script type="text/javascript">
     $(document).ready(function () {

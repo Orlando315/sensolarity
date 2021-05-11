@@ -36,7 +36,7 @@
     <div id="dispositivo-{{ $dispositivo->id }}" class="col-12">
       <div class="row">
 
-        <div class="col-md-4 p-1">
+        <div class="col-md-4 p-1 data-container" data-data="1">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-1" rel="tooltip" title="{{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-1" data-last="{{ $dispositivo->lastData(1) }}" rel="tooltip" title="{{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}">
                     {{ $dispositivo->lastData(1) }} {{ $dispositivo->unidad(1) }}
                   </div>
                 </div>
@@ -59,7 +59,7 @@
                   </div>
                 </div>
 
-                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-toggle="modal" data-target="#configModal" data-data="1">
+                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-data="1">
                   <i class="fa fa-cog"></i>
                 </button>
 
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <div class="col-md-4 p-1">
+        <div data-data="2" class="col-md-4 p-1 data-container">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -79,7 +79,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-2" rel="tooltip" title="{{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-2" data-last="{{ $dispositivo->lastData(2) }}" rel="tooltip" title="{{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}">
                     {{ $dispositivo->lastData(2) }} {{ $dispositivo->unidad(2) }}
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                   </div>
                 </div>
 
-                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-toggle="modal" data-target="#configModal" data-data="2">
+                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-data="2">
                   <i class="fa fa-cog"></i>
                 </button>
 
@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div class="col-md-4 p-1">
+        <div data-data="3" class="col-md-4 p-1 data-container">
           <div class="card card-dispositivo m-0">
             <div class="card-body p-0">
               <div class="row m-0">
@@ -111,7 +111,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 p-1">
-                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-3" rel="tooltip" title="{{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}">
+                  <div class="border rounded p-2 text-right text-truncate dispositivo-data-3" data-last="{{ $dispositivo->lastData(3) }}" rel="tooltip" title="{{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}">
                     {{ $dispositivo->lastData(3) }} {{ $dispositivo->unidad(3) }}
                   </div>
                 </div>
@@ -123,7 +123,7 @@
                   </div>
                 </div>
 
-                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-toggle="modal" data-target="#configModal" data-data="3">
+                <button class="btn btn-fill btn-round btn-sm dispositivo-config-link" title="Configuracion {{ $dispositivo->aliasData(1) }}" type="button" data-data="3">
                   <i class="fa fa-cog"></i>
                 </button>
 
@@ -183,7 +183,7 @@
     </div>
   </div>
 
-  <div id="configModal" class="modal fade" data-easein="slideRightBigIn"  tabindex="-1" role="dialog" aria-labelledby="configModalLabel">
+  <div id="config-modal" class="modal fade" data-easein="slideRightBigIn"  tabindex="-1" role="dialog" aria-labelledby="config-modalLabel">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form id="config-form" action="#" method="POST">
@@ -193,7 +193,7 @@
           @method('PATCH')
 
           <div class="modal-header">
-            <h4 class="modal-title" id="configModalLabel">Configuraci&oacute;n</h4>
+            <h4 class="modal-title" id="config-modalLabel">Configuraci&oacute;n</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -257,16 +257,23 @@
   async defer></script>
   <script type="text/javascript" src="{{ asset('js/plugins/DragDropTouch.js') }}"></script>
 
-  @include('partials.dispositivosPusher')
+  @component('partials.dispositivosPusher')
+    updateSelectedData(k+1, v)
+  @endcomponent
 
   <script type="text/javascript">
     $(document).ready(function () {
-      $('#configModal').on('show.bs.modal', loadConfig);
-      $('#configModal').on('hide.bs.modal', removeConfig);
+      $('#config-modal').on('show.bs.modal', loadConfig);
+      $('#config-modal').on('hide.bs.modal', removeConfig);
       $('#config-form').submit(saveConfig)
       $('.add-rango').click(addRango)
       $('#rangos-box').on('click', '.btn-remove', removeRango)
       $('#rangos-box').on('change', '.rango-color-picker', changeSliderColor)
+      $('.data-container').click(loadSelectedData)
+      $('.dispositivo-config-link').click(function (e) {
+        e.stopPropagation()
+        $('#config-modal').modal('show')
+      })
 
       $('#google-pin').on('drag', draggingPin)
 
@@ -289,6 +296,9 @@
       }
     })
 
+    let selectedData = null
+    let selectedDataRangos = []
+    let selectedDataValue = 0
     let rangosToDelete = []
     const loadingScreen = $('.loading-screen');
     let dispositivo = @json($dispositivo->id);
@@ -478,6 +488,11 @@
           $(`#data-alias-${data}`).text(response.alias)
           $(`.dispositivo-data-${data}`).text(response.lastData)
 
+          if(data == selectedData){
+            selectedDataRangos = response.rangos
+            updateCircle()
+          }
+
           showAlert(false)
         }else{
           showAlert()
@@ -503,7 +518,7 @@
       alert.show().delay(5000).hide('slow')
     }
 
-    var map, marker, infoWindow, saveMapBtn, overlayLayer;
+    var map, marker, infoWindow, saveMapBtn, overlayLayer, dataCircle;
     var zoom = @json($dispositivo->config->zoom);
     var myPosition = {
           lat: @json($dispositivo->config->lat) || -34.397,
@@ -730,6 +745,7 @@
       })
       .done(function(response) {
         showAlert('.alert-map', !response)
+        dataCircle && updateCircle()
       })
       .fail(function() {
         showAlert('.alert-map')
@@ -737,6 +753,90 @@
       .always(function() {
         $('#save-map-btn').attr('disabled', false)
       })
+    }
+
+    function loadSelectedData() {
+      selectedData = $(this).data('data')
+      markAsSelected()
+
+      $.ajax({
+        type: 'POST',
+        url: `{{ route("dispositivos.index") }}/${dispositivo}/get/${selectedData}/config`,
+        data: {_token: '{{ @csrf_token() }}'},
+        dataType: 'json',
+      })
+      .done(function (response) {
+
+        selectedDataRangos = [...response.rangos]
+        setSelectedDataValue()
+
+        dataCircle ? updateCircle() : createCircle()
+      })
+      .fail(function () {
+        showAlert()
+      })
+      .always(function () {
+      })
+    }
+
+    // Marcar el data-container seleccionado con un .border-primary
+    function markAsSelected() {
+      $('.data-container .card').removeClass('border-primary')
+      $(`.data-container[data-data="${selectedData}"] .card`).addClass('border-primary')
+    }
+
+    function setSelectedDataValue() {
+      let value = $(`.dispositivo-data-${selectedData}`).data('last')
+
+      if(typeof value === 'string'){
+        value = value.replace('.', '') * 1
+      }
+
+      selectedDataValue = value;
+    }
+
+    function getSelectedRangoColor() {
+      let rangoColor = null;
+
+      selectedDataRangos.forEach(rango => {
+        if(rango.min <= selectedDataValue && rango.max >= selectedDataValue){
+          rangoColor = rango.color
+        }
+      });
+
+      return rangoColor || '#FFFFFF';
+    }
+
+    // Crear circulo en Google Maps
+    function createCircle() {
+      let color = getSelectedRangoColor();
+
+      dataCircle = new google.maps.Circle({
+        strokeColor: color,
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: color,
+        fillOpacity: 0.3,
+        map: map,
+        center: myPosition,
+        radius: 1000,
+      })
+    }
+
+    function updateCircle() {
+      let color = getSelectedRangoColor()
+      dataCircle.setOptions({
+        strokeColor: color,
+        fillColor: color,
+        center: myPosition,
+      })
+    }
+
+    function updateSelectedData(data, value) {
+      if(data == selectedData){
+        selectedDataValue = value.split(' ')[0] * 1;
+        updateCircle()
+      }
     }
 
   </script>

@@ -17,6 +17,8 @@
       $(`#dispositivo-${data.dispositivo} .dispositivo-data-${k+1}`)
         .attr('data-original-title', v)
         .text(v)
+
+    {{ $slot }}
     })
   });
 </script>
