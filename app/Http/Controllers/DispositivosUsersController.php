@@ -181,9 +181,9 @@ class DispositivosUsersController extends Controller
       if($dispositivo->delete()){
         $route = Auth::user()->isAdmin()
                     ? route('admin.users.show', ['user' => $dispositivo->user_id])
-                    : $dispositivo->tipo == 'M'
+                    : ($dispositivo->tipo == 'M'
                       ? route('dispositivos.modulos.index')
-                      : route('dispositivos.mapa.index');
+                      : route('dispositivos.mapa.index'));
 
         return redirect($route)->with([
           'flash_message' => 'Dispositivo eliminado exitosamente.',
@@ -192,9 +192,9 @@ class DispositivosUsersController extends Controller
       }else{
         $route = Auth::user()->isAdmin()
                     ? route('dispositivos.show', ['dispositivo' => $dispositivo->id])
-                    : $dispositivo->tipo == 'M'
+                    : ($dispositivo->tipo == 'M'
                       ? route('dispositivos.modulos.index')
-                      : route('dispositivos.mapa.index');
+                      : route('dispositivos.mapa.index'));
 
         return redirect($route)->with([
           'flash_message' => 'Ha ocurrido un error.',

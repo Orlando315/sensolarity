@@ -22,8 +22,8 @@
                 <label class="control-label" for="tipo">Tipo: *</label>
                 <select id="tipo" class="form-control" name="tipo" required>
                   <option value="">Seleccione...</option>
-                  <option value="P" {{ old('tipo') == 'user' ? 'selected' : $dispositivo->tipo == 'P' ? 'selected' : '' }}> Valor en mapa (P)</option>
-                  <option value="M" {{ old('tipo') == 'admin' ? 'selected' : $dispositivo->tipo == 'M' ? 'selected' : '' }}> Modulo (M)</option>
+                  <option value="P" {{ old('tipo') == 'user' ? 'selected' : ($dispositivo->tipo == 'P' ? 'selected' : '') }}> Valor en mapa (P)</option>
+                  <option value="M" {{ old('tipo') == 'admin' ? 'selected' : ($dispositivo->tipo == 'M' ? 'selected' : '') }}> Modulo (M)</option>
                 </select>
               </div>
 

@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      if(Schema::hasTable('configuration')){
+      if(Schema::hasTable('configurations')){
         $configuration = Configuration::first();
 
         View::share('store_url', $configuration && $configuration->store_url != '#' ? $configuration->store_url : null);

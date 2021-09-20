@@ -22,8 +22,8 @@
                 <label class="control-label" for="role">Role: *</label>
                 <select id="role" class="form-control" name="role" required>
                   <option value="">Seleccione...</option>
-                  <option value="user" {{ old('role') == 'user' ? 'selected' : $user->role == 'user' ? 'selected' : '' }}> Usuario</option>
-                  <option value="admin" {{ old('role') == 'admin' ? 'selected' : $user->role == 'admin' ? 'selected' : '' }}> Administrador</option>
+                  <option value="user" {{ old('role') == 'user' ? 'selected' : ($user->role == 'user' ? 'selected' : '') }}> Usuario</option>
+                  <option value="admin" {{ old('role') == 'admin' ? 'selected' : ($user->role == 'admin' ? 'selected' : '') }}> Administrador</option>
                 </select>
               </div>
 

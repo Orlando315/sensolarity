@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use App\DispositivoUser;
 use App\DispositivoUserRango;
 
-class DispositivosUsersTableRangosSeeder extends Seeder
+class DispositivosUsersRangosTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
